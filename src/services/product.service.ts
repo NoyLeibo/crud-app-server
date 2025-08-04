@@ -11,7 +11,7 @@ interface CreateProductInput {
   marketingDate: Date;
 }
 
-const create = async (input: CreateProductInput) => {
+const createProducts = async (input: CreateProductInput) => {
   try {
     const newProduct = new ProductModel(input);
     await newProduct.save();
@@ -22,11 +22,27 @@ const create = async (input: CreateProductInput) => {
   }
 };
 
-const get = async (category: ProductCategory | null) => {
-  if (category) {
-    return ProductModel.find({ category });
+const getProducts = async (category: ProductCategory | null) => {
+  try {
+    if (category) {
+      return ProductModel.find({ category });
+    }
+    return ProductModel.find();
+  } catch (error: any) {
+    throw new Error(error);
   }
-  return ProductModel.find();
 };
 
-export const productService = { create, get };
+const deleteProducts = async (ids: string | string[]) => {
+  try {
+    if (Array.isArray(ids)) {
+      return await ProductModel.deleteMany({ _id: { $in: ids } });
+    } else {
+      return await ProductModel.findByIdAndDelete(ids);
+    }
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const productService = { createProducts, getProducts, deleteProducts };

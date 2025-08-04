@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { productService } from "../services/product.service";
 import { ProductCategory, ProductName } from "../models/product.model";
 
-const create = async (request: Request, response: Response): Promise<any> => {
+const createProduct = async (request: Request, response: Response): Promise<any> => {
   try {
     const {
       name,
@@ -19,7 +19,7 @@ const create = async (request: Request, response: Response): Promise<any> => {
       marketingDate: string; // ISO format, will convert to Date
     } = request.body;
 
-    const newProduct = await productService.create({
+    const newProduct = await productService.createProducts({
       name,
       sku,
       description,
@@ -37,7 +37,7 @@ const create = async (request: Request, response: Response): Promise<any> => {
   }
 };
 
-const get = async (request: Request, response: Response): Promise<any> => {
+const getProduct = async (request: Request, response: Response): Promise<any> => {
   try {
     const categoryParam = request.query.category;
 
@@ -48,7 +48,7 @@ const get = async (request: Request, response: Response): Promise<any> => {
     ) {
       category = categoryParam as ProductCategory;
     }
-    const products = await productService.get(category ? category : null);
+    const products = await productService.getProducts(category ? category : null);
 
     return response.status(StatusCodes.OK).send(products);
   } catch (error: any) {
@@ -58,4 +58,18 @@ const get = async (request: Request, response: Response): Promise<any> => {
   }
 };
 
-export const ProductController = { get, create };
+const deleteProduct = async (request: Request, response: Response): Promise<any> => {
+  try {
+    const { ids } = request.body;
+    if (!ids || (Array.isArray(ids) && ids.length === 0)) {
+      return response.status(StatusCodes.BAD_REQUEST).json({ message: "No IDs provided for deletion" });
+    }
+    const result = await productService.deleteProducts(ids);
+    return response.status(StatusCodes.OK).json({ message: "Deleted successfully", result });
+  } catch (error: any) {
+    return response.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
+  }
+};
+
+
+export const ProductController = { getProduct, createProduct, deleteProduct };
