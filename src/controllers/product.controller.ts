@@ -26,21 +26,31 @@ const create = async (request: Request, response: Response): Promise<any> => {
       category,
       marketingDate: new Date(marketingDate),
     });
-    console.log(newProduct);
 
-    return response.status(StatusCodes.CREATED).send("Product has been created");
+    return response.status(StatusCodes.CREATED).send(newProduct);
   } catch (error: any) {
-    return response
-      .status(StatusCodes.BAD_REQUEST)
-      .send("Error in createProduct function");
+    console.log(error);
+
+    return response.status(StatusCodes.BAD_REQUEST).json({
+      message: error.message,
+    });
   }
 };
 
 const get = async (request: Request, response: Response): Promise<any> => {
   try {
-    return response
-      .status(StatusCodes.OK)
-      .send("Product has been sent" + "Product VARIABLE");
+    const categoryParam = request.query.category;
+
+    let category: ProductCategory | null = null;
+    if (
+      typeof categoryParam === "string" &&
+      ["Fruit", "Vegetable", "Field Crop"].includes(categoryParam)
+    ) {
+      category = categoryParam as ProductCategory;
+    }
+    const products = await productService.get(category ? category : null);
+
+    return response.status(StatusCodes.OK).send(products);
   } catch (error: any) {
     return response
       .status(StatusCodes.BAD_REQUEST)

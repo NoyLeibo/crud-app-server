@@ -4,6 +4,7 @@ import express from "express";
 import { servers } from "./servers";
 import { dbService } from "./src/services/db.service";
 import { productRoutes } from "./src/routes/product.routes";
+import expressLogger from 'morgan'
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ const corsOptions = {
 const app = express();
 app.use(express.json());
 app.use(cors(corsOptions));
+app.use(expressLogger('dev'))
 
 app.use('/product', productRoutes);
   
