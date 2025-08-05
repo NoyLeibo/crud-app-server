@@ -19,7 +19,7 @@ const createProduct = async (
       sku: number;
       description?: string;
       category: ProductCategory;
-      marketingDate: string; // ISO format, will convert to Date
+      marketingDate: string; 
     } = request.body;
 
     const newProduct = await productService.create({

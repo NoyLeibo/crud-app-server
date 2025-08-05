@@ -29,45 +29,61 @@ interface IProductModel extends Document {
 }
 
 const ProductSchema = new Schema<IProductModel>(
-  {
-    name: {
-      type: String,
-      required: [true, "Product name is required"],
-      maxlength: [50, "Product name cannot bigger 50 char"],
-      minlength: [3, "Product name cannot shorter than 3 char"],
-      trim: true,
-    },
-    sku: {
-      type: Number,
-      required: [true, "SKU is required"],
-      min: [0, "SKU must be a non-negative number"],
-    },
-    description: {
-      type: String,
-      default: "",
-    },
-    category: {
-      type: String,
-      enum: {
-        values: ["Fruit", "Vegetable", "Field Crop"],
-        message: "Category must be one of: Fruit, Vegetable, Field Crop",
+    {
+      name: {
+        type: String,
+        required: [true, "Product name is required"],
+        maxlength: [50, "Product name cannot be longer than 50 characters"],
+        minlength: [3, "Product name must be at least 3 characters long"],
+        trim: true,
       },
-      required: [true, "Category is required"],
+      sku: {
+        type: Number,
+        required: [true, "SKU is required"],
+        min: [0, "SKU must be a non-negative number"],
+        max: [1000, "SKU cannot be greater than 1000"],
+      },
+      description: {
+        type: String,
+        default: "",
+      },
+      category: {
+        type: String,
+        enum: {
+          values: ["Fruit", "Vegetable", "Field Crop"],
+          message: "Category must be one of: Fruit, Vegetable, Field Crop",
+        },
+        required: [true, "Category is required"],
+      },
+      marketingDate: {
+        type: Date,
+        required: [true, "Marketing date is required"],
+        validate: {
+          validator: function (value: Date) {
+            const today = new Date();
+            const minDate = new Date();
+            minDate.setDate(today.getDate() - 7);
+  
+            value.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            minDate.setHours(0, 0, 0, 0);
+  
+            return value <= minDate;
+          },
+          message: "Marketing date must be at least 7 days ago",
+        },
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
     },
-    marketingDate: {
-      type: Date,
-      required: [true, "Marketing date is required"],
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  {
-    timestamps: true,
-    versionKey: false,
-  }
-);
+    {
+      timestamps: true,
+      versionKey: false,
+    }
+  );
+  
 
 ProductSchema.methods.removeAllImportantData =
   function (): Partial<IProductModel> {
