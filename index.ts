@@ -24,6 +24,7 @@ const app = express();
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(expressLogger("dev"));
+app.set("etag", false); 
 
 app.use("/product", productRoutes);
 

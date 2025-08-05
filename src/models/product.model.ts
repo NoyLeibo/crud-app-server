@@ -27,6 +27,7 @@ interface IProductModel extends Document {
   updatedAt: Date | null;
   removeAllImportantData: () => Partial<IProductModel>;
 }
+
 const ProductSchema = new Schema<IProductModel>(
   {
     name: {
