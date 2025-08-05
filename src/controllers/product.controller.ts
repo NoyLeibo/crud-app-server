@@ -90,7 +90,7 @@ const getProductById = async (
 ): Promise<any> => {
   const productId: string = request.params.id;
   try {
-    const product = productService.getProductById(productId);
+    const product = await productService.getProductById(productId);
     if (!product) {
       throw new Error("Product not found");
     }
