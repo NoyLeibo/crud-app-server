@@ -62,9 +62,19 @@ const remove = async (ids: string | string[]) => {
   }
 };
 
+const getProductById = async (
+  productId: string
+): Promise<IProductModel | null> => {
+  try {
+    return await ProductModel.findById(productId).exec();
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
 export const productService = {
   create,
   get,
   remove,
   update,
+  getProductById,
 };

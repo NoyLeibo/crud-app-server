@@ -84,6 +84,24 @@ const deleteProduct = async (
   }
 };
 
+const getProductById = async (
+  request: Request,
+  response: Response
+): Promise<any> => {
+  const productId: string = request.params.id;
+  try {
+    const product = productService.getProductById(productId);
+    if (!product) {
+      throw new Error("Product not found");
+    }
+    return response.status(StatusCodes.OK).send(product);
+  } catch (error: any) {
+    return response.status(StatusCodes.BAD_REQUEST).json({
+      message: error.message,
+    });
+  }
+};
+
 const updateProduct = async (
   request: Request,
   response: Response
@@ -105,4 +123,5 @@ export const productController = {
   createProduct,
   deleteProduct,
   updateProduct,
+  getProductById,
 };
