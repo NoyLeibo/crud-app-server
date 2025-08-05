@@ -1,4 +1,5 @@
 import {
+  IProductModel,
   ProductCategory,
   ProductModel,
   ProductName,
@@ -11,7 +12,7 @@ interface CreateProductInput {
   marketingDate: Date;
 }
 
-const createProducts = async (input: CreateProductInput) => {
+const create = async (input: CreateProductInput) => {
   try {
     const newProduct = new ProductModel(input);
     await newProduct.save();
@@ -22,7 +23,7 @@ const createProducts = async (input: CreateProductInput) => {
   }
 };
 
-const getProducts = async (category: ProductCategory | null) => {
+const get = async (category: ProductCategory | null) => {
   try {
     if (category) {
       return ProductModel.find({ category });
@@ -33,7 +34,23 @@ const getProducts = async (category: ProductCategory | null) => {
   }
 };
 
-const deleteProducts = async (ids: string | string[]) => {
+const update = async (product: Partial<IProductModel>, productId: string) => {
+  try {
+    const updatedProduct = await ProductModel.findByIdAndUpdate(
+      productId,
+      product,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    return updatedProduct;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+const remove = async (ids: string | string[]) => {
   try {
     if (Array.isArray(ids)) {
       return await ProductModel.deleteMany({ _id: { $in: ids } });
@@ -45,4 +62,9 @@ const deleteProducts = async (ids: string | string[]) => {
   }
 };
 
-export const productService = { createProducts, getProducts, deleteProducts };
+export const productService = {
+  create,
+  get,
+  remove,
+  update,
+};

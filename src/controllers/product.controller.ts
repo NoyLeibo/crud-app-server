@@ -22,7 +22,7 @@ const createProduct = async (
       marketingDate: string; // ISO format, will convert to Date
     } = request.body;
 
-    const newProduct = await productService.createProducts({
+    const newProduct = await productService.create({
       name,
       sku,
       description,
@@ -32,8 +32,6 @@ const createProduct = async (
 
     return response.status(StatusCodes.CREATED).send(newProduct);
   } catch (error: any) {
-    console.log(error);
-
     return response.status(StatusCodes.BAD_REQUEST).json({
       message: error.message,
     });
@@ -54,15 +52,13 @@ const getProduct = async (
     ) {
       category = categoryParam as ProductCategory;
     }
-    const products = await productService.getProducts(
-      category ? category : null
-    );
+    const products = await productService.get(category ? category : null);
 
     return response.status(StatusCodes.OK).send(products);
   } catch (error: any) {
-    return response
-      .status(StatusCodes.BAD_REQUEST)
-      .send("Error in getProducts function");
+    return response.status(StatusCodes.BAD_REQUEST).json({
+      message: error.message,
+    });
   }
 };
 
@@ -71,23 +67,42 @@ const deleteProduct = async (
   response: Response
 ): Promise<any> => {
   try {
-    console.log("delete!");
-
     const { ids } = request.body;
     if (!ids || (Array.isArray(ids) && ids.length === 0)) {
       return response
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "No IDs provided for deletion" });
     }
-    const result = await productService.deleteProducts(ids);
+    const result = await productService.remove(ids);
     return response
       .status(StatusCodes.OK)
       .json({ message: "Deleted successfully", result });
   } catch (error: any) {
-    return response
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: error.message });
+    return response.status(StatusCodes.BAD_REQUEST).json({
+      message: error.message,
+    });
   }
 };
 
-export const ProductController = { getProduct, createProduct, deleteProduct };
+const updateProduct = async (
+  request: Request,
+  response: Response
+): Promise<any> => {
+  try {
+    const productId = request.params.id;
+    const product = request.body;
+    const updatedProduct = await productService.update(product, productId);
+    return response.status(StatusCodes.OK).send(updatedProduct);
+  } catch (error: any) {
+    return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: error.message,
+    });
+  }
+};
+
+export const productController = {
+  getProduct,
+  createProduct,
+  deleteProduct,
+  updateProduct,
+};
