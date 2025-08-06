@@ -19,7 +19,7 @@ const createProduct = async (
       sku: number;
       description?: string;
       category: ProductCategory;
-      marketingDate: string; 
+      marketingDate: string;
     } = request.body;
 
     const newProduct = await productService.create({
@@ -44,6 +44,7 @@ const getProduct = async (
 ): Promise<any> => {
   try {
     const categoryParam = request.query.category;
+    const nameParam = request.query.name;
 
     let category: ProductCategory | null = null;
     if (
@@ -52,7 +53,15 @@ const getProduct = async (
     ) {
       category = categoryParam as ProductCategory;
     }
-    const products = await productService.get(category ? category : null);
+
+    const name: string | null =
+      typeof nameParam === "string" && nameParam.trim() !== ""
+        ? nameParam.trim()
+        : null;
+      
+    const query = {category, name}
+
+    const products = await productService.get(query);
 
     return response.status(StatusCodes.OK).send(products);
   } catch (error: any) {

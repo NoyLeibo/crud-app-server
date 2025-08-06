@@ -12,6 +12,11 @@ interface CreateProductInput {
   marketingDate: Date;
 }
 
+interface ProductFilter {
+  category: ProductCategory | null;
+  name: string | null;
+}
+
 const create = async (input: CreateProductInput) => {
   try {
     const newProduct = new ProductModel(input);
@@ -23,10 +28,15 @@ const create = async (input: CreateProductInput) => {
   }
 };
 
-const get = async (category: ProductCategory | null) => {
+const get = async (query: ProductFilter) => {
   try {
-    if (category) {
-      return ProductModel.find({ category });
+    const newQuery: any = {};
+
+    if (query.category) newQuery.category = query.category;
+    if (query.name) newQuery.name = { $regex: query.name, $options: "i" };
+
+    if (newQuery) {
+      return ProductModel.find(newQuery);
     }
     return ProductModel.find();
   } catch (error: any) {
