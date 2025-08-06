@@ -30,7 +30,9 @@ const create = async (input: CreateProductInput) => {
 
 const get = async (query: ProductFilter) => {
   try {
-    const newQuery: any = {};
+    const newQuery: any = {
+      isDeleted: false,
+    };
 
     if (query.category) newQuery.category = query.category;
     if (query.name) newQuery.name = { $regex: query.name, $options: "i" };
@@ -63,9 +65,16 @@ const update = async (product: Partial<IProductModel>, productId: string) => {
 const remove = async (ids: string | string[]) => {
   try {
     if (Array.isArray(ids)) {
-      return await ProductModel.deleteMany({ _id: { $in: ids } });
+      return await ProductModel.updateMany(
+        { _id: { $in: ids } },
+        { isDeleted: true }
+      );
     } else {
-      return await ProductModel.findByIdAndDelete(ids);
+      return await ProductModel.findByIdAndUpdate(
+        ids,
+        { isDeleted: true },
+        { new: true }
+      );
     }
   } catch (error: any) {
     throw new Error(error);
@@ -81,10 +90,32 @@ const getProductById = async (
     throw new Error(error);
   }
 };
+
+const undoDelete = async (ids: string | string[]) => {
+  try {
+    if (Array.isArray(ids)) {
+      return await ProductModel.updateMany(
+        { _id: { $in: ids } },
+        { isDeleted: false }
+      );
+    } else {
+      return await ProductModel.findByIdAndUpdate(
+        ids,
+        { isDeleted: false },
+        { new: true }
+      );
+    }
+  } catch (error: any) {
+    console.error("❌ Error in undoDelete:", error);
+    throw new Error(error);
+  }
+};
+
 export const productService = {
   create,
   get,
   remove,
   update,
   getProductById,
+  undoDelete,
 };

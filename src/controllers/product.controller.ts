@@ -58,8 +58,8 @@ const getProduct = async (
       typeof nameParam === "string" && nameParam.trim() !== ""
         ? nameParam.trim()
         : null;
-      
-    const query = {category, name}
+
+    const query = { category, name };
 
     const products = await productService.get(query);
 
@@ -71,6 +71,28 @@ const getProduct = async (
   }
 };
 
+const undoDelete = async (
+  request: Request,
+  response: Response
+): Promise<any> => {
+  try {
+    const { ids } = request.body;
+
+    if (!ids || (Array.isArray(ids) && ids.length === 0)) {
+      return response
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "No IDs provided for deletion" });
+    }
+    const result = await productService.undoDelete(ids);
+    return response.status(StatusCodes.OK).send(result);
+  } catch (error: any) {
+    console.log(error);
+
+    return response.status(StatusCodes.BAD_REQUEST).json({
+      message: error.message,
+    });
+  }
+};
 const deleteProduct = async (
   request: Request,
   response: Response
@@ -133,4 +155,5 @@ export const productController = {
   deleteProduct,
   updateProduct,
   getProductById,
+  undoDelete,
 };
