@@ -3,12 +3,12 @@ import { productController } from "../controllers/product.controller";
 
 const router = express.Router();
 
-router.post("/", productController.createProduct);
-router.get("/", productController.getProduct);
-router.delete("/", productController.deleteProduct);
-router.get("/:id", productController.getProductById);
-
 router.put("/undo-delete", productController.undoDelete);
 router.put("/:id", productController.updateProduct);
+
+router.get("/", productController.getProduct);
+router.get("/:id", productController.getProductById);
+router.post("/", productController.createProduct);
+router.delete("/", productController.deleteProduct);
 
 export const productRoutes = router;
