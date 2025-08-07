@@ -5,6 +5,8 @@ import { servers } from "./servers";
 import { dbService } from "./src/services/db.service";
 import { productRoutes } from "./src/routes/product.routes";
 import expressLogger from "morgan";
+import { notFoundHandler } from "./src/middlewares/notFound.middleware";
+import { globalErrorHandler } from "./src/middlewares/errorHandler.middleware";
 
 dotenv.config();
 
@@ -27,6 +29,9 @@ app.use(expressLogger("dev"));
 app.set("etag", false); 
 
 app.use("/product", productRoutes);
+
+app.use(notFoundHandler);
+app.use(globalErrorHandler);
 
 const startServer = async () => {
   try {
