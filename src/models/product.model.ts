@@ -74,10 +74,6 @@ const ProductSchema = new Schema<IProductModel>(
         message: "Marketing date must be at least 7 days ago",
       },
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
     isDeleted: {
       type: Boolean,
       default: false,
