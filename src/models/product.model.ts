@@ -25,7 +25,7 @@ interface IProductModel extends Document {
   marketingDate: Date;
   createdAt: Date;
   updatedAt: Date | null;
-  isDeleted: boolean; // ✅ הוספנו כאן
+  isDeleted: boolean;
   removeAllImportantData: () => Partial<IProductModel>;
 }
 
