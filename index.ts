@@ -26,7 +26,7 @@ const app = express();
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(expressLogger("dev"));
-app.set("etag", false); 
+app.set("etag", false);
 
 app.use("/product", productRoutes);
 
@@ -35,12 +35,12 @@ app.use(globalErrorHandler);
 
 const startServer = async () => {
   try {
-    console.log("🚀 Starting Server...");
+    console.log("Starting Server...");
 
     await dbService.connectToMongoDB();
     await servers.startServer(app);
   } catch (error: any) {
-    console.error(`❌ Failed to start server: ${error.message}`);
+    console.error(`Failed to start server: ${error.message}`);
     process.exit(1);
   }
 };
