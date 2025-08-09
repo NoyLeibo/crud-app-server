@@ -2,23 +2,21 @@ import { model, Schema, Document, ObjectId } from "mongoose";
 
 export type ProductCategory = "Fruit" | "Vegetable" | "Field Crop";
 
-export type ProductName =
-  // Fruit:
-  | "Apple"
-  | "Banana"
-  | "Grapes"
-  // Vegetable:
-  | "Cucumber"
-  | "Tomato"
-  | "Carrot"
-  // Field Crop:
-  | "Rice"
-  | "Lentils"
-  | "Wheat";
+export const PRODUCT_NAMES = [
+  "Apple",
+  "Banana",
+  "Grapes",
+  "Cucumber",
+  "Tomato",
+  "Carrot",
+  "Rice",
+  "Lentils",
+  "Wheat",
+] as const;
 
 interface IProductModel extends Document {
   _id: ObjectId;
-  name: ProductName;
+  name: typeof PRODUCT_NAMES[number];
   sku: number;
   description?: string;
   category: ProductCategory;
@@ -37,6 +35,9 @@ const ProductSchema = new Schema<IProductModel>(
       maxlength: [50, "Product name cannot be longer than 50 characters"],
       minlength: [3, "Product name must be at least 3 characters long"],
       trim: true,
+      enum: {
+        values: PRODUCT_NAMES,
+      },
     },
     sku: {
       type: Number,

@@ -2,10 +2,10 @@ import {
   IProductModel,
   ProductCategory,
   ProductModel,
-  ProductName,
+  PRODUCT_NAMES,
 } from "../models/product.model";
 interface CreateProductInput {
-  name: ProductName;
+  name: string;
   sku: number;
   description?: string;
   category: ProductCategory;
@@ -24,7 +24,7 @@ const create = async (input: CreateProductInput) => {
 
     return newProduct;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.errors.name);
   }
 };
 

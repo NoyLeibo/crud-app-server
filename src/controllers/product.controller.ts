@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 import { productService } from "../services/product.service";
-import { ProductCategory, ProductName } from "../models/product.model";
+import { ProductCategory, PRODUCT_NAMES } from "../models/product.model";
 
 const createProduct = async (
   request: Request,
@@ -15,15 +15,17 @@ const createProduct = async (
       category,
       marketingDate,
     }: {
-      name: ProductName;
+      name: string;
       sku: number;
       description?: string;
       category: ProductCategory;
       marketingDate: string;
     } = request.body;
+    const formattedName = name.charAt(0).toUpperCase() + String(name).slice(1);
+console.log(formattedName);
 
     const newProduct = await productService.create({
-      name,
+      name: formattedName,
       sku,
       description,
       category,
@@ -105,9 +107,7 @@ const deleteProduct = async (
         .json({ message: "No IDs provided for deletion" });
     }
     const result = await productService.remove(ids);
-    return response
-      .status(StatusCodes.OK)
-      .json({ message: "Deleted successfully", result });
+    return response.status(StatusCodes.OK).send(result);
   } catch (error: any) {
     return response.status(StatusCodes.BAD_REQUEST).json({
       message: error.message,
