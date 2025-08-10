@@ -20,8 +20,8 @@ This is a simple, modern Node.js server for managing a product inventory. It was
 
 1. **Clone the repo:**
    ```bash
-   git clone <your-repo-url>
-   cd <project-folder>
+   git clone [your-repo-url](https://github.com/NoyLeibo/crud-app-server.git)
+   cd crud-app-server
    ```
 2. **Install dependencies:**
    ```bash
