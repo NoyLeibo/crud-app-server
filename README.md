@@ -82,15 +82,7 @@ All endpoints are prefixed with `/product`.
   ```json
   { "ids": ["id1", "id2"] }
   ```
-
----
-
-## 🧑‍💻 Contributing & Notes
-- This project is for learning and demonstration. PRs are welcome!
-- The code is written to be readable and maintainable. If you spot something to improve, open an issue or PR.
-- Error handling and validation are present, but you can always make it stricter.
-- For authentication, see the `middlewares/requireAuth.middleware.ts` (if implemented).
-
+  
 ---
 
 ## ❤️ Author
