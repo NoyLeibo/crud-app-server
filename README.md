@@ -28,7 +28,7 @@ This is a simple, modern Node.js server for managing a product inventory. It was
    npm install
    ```
 3. **Configure environment:**
-   - Copy `.env.example` to `.env` (if exists) and set your MongoDB URI and any other secrets.
+   - Copy `.env.example` to `.env` and set your MongoDB USER-NAME and PASSWORD and any other secrets.
 4. **Run the server (dev mode):**
    ```bash
    npm run dev
